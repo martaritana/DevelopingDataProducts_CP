@@ -1,0 +1,49 @@
+Which iris you have?
+========================================================
+author: Margarette Kulikova
+date: 21.09.2014
+
+Determining iris
+========================================================
+
+Given you have an iris and you don't know its specie. How to find it?
+
+Now it is possible to find out your iris specie with my application "Which iris you have?":
+
+https://martaritana.shinyapps.io/DevelopingDataProducts_CP/
+
+How does it work?
+========================================================
+
+The application uses a model fitted on R iris dataset. The model is fitted using Recursive Partitioning and Regression Trees with help of caret package.
+
+```{r}
+library(caret)
+data(iris)
+modelFit <- train(Species ~ ., data=iris, method="rpart")
+```
+
+Final model
+========================================================
+
+```{r}
+modelFit$finalModel
+```
+
+Your result is plotted on exsisting dataset
+========================================================
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(gridExtra)
+inputIris <- iris[sample(1:nrow(iris), 1), ]
+inputIris$Species <- predict(modelFit, newdata=inputIris)
+Origin <- rep(1, nrow(iris))
+Origin <- c(Origin, 2)
+Origin <- as.factor(Origin)
+levels(Origin) <- c("dataset", "your iris")
+plotData <- rbind(iris, inputIris)
+p1 <- qplot(Sepal.Length, Sepal.Width, data=plotData, colour=Species, shape=Origin, size=Origin)
+p2 <- qplot(Petal.Length, Petal.Width, data=plotData, colour=Species, shape=Origin, size=Origin)
+grid.arrange(p1, p2, nrow=1)
+```
