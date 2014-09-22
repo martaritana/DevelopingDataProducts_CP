@@ -38,6 +38,13 @@ shinyServer(function(input, output) {
     grid.arrange(p1, p2, nrow=1)
   })
   
-  output$specie <- renderPrint({ as.character(inputIris$Species) })
+  output$specie <- renderPrint({
+    inputIris <<- data.frame(Sepal.Length=as.numeric(input$sepal_length),
+                             Sepal.Width=as.numeric(input$sepal_width),
+                             Petal.Length=as.numeric(input$petal_length),
+                             Petal.Width=as.numeric(input$petal_width))
+    inputIris$Species <<- predict(modelFit, newdata=inputIris)
+    as.character(inputIris$Species)
+  })
   
 })
