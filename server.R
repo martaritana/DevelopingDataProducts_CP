@@ -10,9 +10,14 @@ library(lattice)
 library(grid)
 library(gridExtra)
 library(caret)
+library(rpart)
 
 data(iris)
-modelFit <- train(Species ~ ., data=iris, method="rpart")
+# We load precalculated model instead of fitting one every time the server loads.
+# The model was precalculated with following code:
+# modelFit <- train(Species ~ ., data=iris, method="rpart")
+# save(modelFit, "modelFit.RData")
+load("modelFit.RData")
 inputIris <- NULL
 
 shinyServer(function(input, output) {
